@@ -23,11 +23,24 @@ var input string = `1000
 
 func TestPart1(t *testing.T) {
 	r := strings.NewReader(input)
-	result := part1(r)
+	elves := ParseElves(r)
+
+	result := part1(elves)
 
 	if result != 24000 {
 		t.Errorf("Expected 24000, got %d", result)
 	}
+}
+
+func TestPart2(t *testing.T) {
+	r := strings.NewReader(input)
+	elves := ParseElves(r)
+
+	result := part2(elves)
+	if result != 45000 {
+		t.Errorf("Expected 45000, got %d", result)
+	}
+
 }
 
 func TestNewElf(t *testing.T) {

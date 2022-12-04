@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -15,28 +16,49 @@ func main() {
 		log.Fatal("Error reading file: ", err)
 	}
 
-	fmt.Printf("Part 1 solution: %d", part1(f))
+	elves := ParseElves(f)
+
+	fmt.Printf("Part 1 solution: %d\n", part1(elves))
+	fmt.Printf("Part 2 solution: %d\n", part2(elves))
 }
 
-func part1(r io.Reader) int {
+func part1(elves []Elf) int {
 	max := 0
-	elves := ParseElves(r)
 
 	for i := 0; i < len(elves); i++ {
-
 		if elves[i].Total > max {
 			max = elves[i].Total
 		}
-
 	}
 
 	return max
+}
+
+func part2(elves []Elf) int {
+	sort.Sort(ByTotal(elves))
+
+	total := 0
+	for i := range elves[:3] {
+		total += elves[i].Total
+	}
+
+	return total
 }
 
 type Elf struct {
 	Calories []int
 	Total    int
 }
+
+func (e Elf) String() string {
+	return fmt.Sprintf("Total Calories: %d", e.Total)
+}
+
+type ByTotal []Elf
+
+func (e ByTotal) Len() int           { return len(e) }
+func (e ByTotal) Swap(i, j int)      { e[i], e[j] = e[j], e[i] }
+func (e ByTotal) Less(i, j int) bool { return e[j].Total < e[i].Total }
 
 func ParseElves(r io.Reader) []Elf {
 	s := bufio.NewScanner(r)
