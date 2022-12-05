@@ -25,6 +25,14 @@ func TestPart1(t *testing.T) {
 }
 
 func TestPart2(t *testing.T) {
+	r := strings.NewReader(input)
+	a := ParseAssignments(r)
+
+	result := Part2(a)
+
+	if result != 4 {
+		t.Errorf("Expected 4, got: %d", result)
+	}
 }
 
 func TestParseAssignments(t *testing.T) {

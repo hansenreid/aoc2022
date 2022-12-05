@@ -18,9 +18,11 @@ func main() {
 
 	a := ParseAssignments(f)
 
-	sum := Part1(a)
-	fmt.Printf("Part 1 solution: %d", sum)
+	part1 := Part1(a)
+	fmt.Printf("Part 1 solution: %d\n", part1)
 
+	part2 := Part2(a)
+	fmt.Printf("Part 2 solution: %d\n", part2)
 }
 
 func Part1(a []Assignment) int {
@@ -30,6 +32,21 @@ func Part1(a []Assignment) int {
 		elf2 := a[i].elf2
 
 		if contains(&elf1, &elf2) {
+			sum += 1
+		}
+	}
+
+	return sum
+}
+
+func Part2(a []Assignment) int {
+	sum := 0
+
+	for i := range a {
+		elf1 := a[i].elf1
+		elf2 := a[i].elf2
+
+		if overlaps(&elf1, &elf2) {
 			sum += 1
 		}
 	}
@@ -92,6 +109,22 @@ func contains(elf1 *Elf, elf2 *Elf) bool {
 	}
 
 	if elf2.start <= elf1.start && elf2.end >= elf1.end {
+		return true
+	}
+
+	return false
+}
+
+func overlaps(elf1 *Elf, elf2 *Elf) bool {
+	if elf1.start <= elf2.start &&
+		elf1.start <= elf2.end &&
+		elf1.end >= elf2.start {
+		return true
+	}
+
+	if elf2.start <= elf1.start &&
+		elf2.start <= elf1.end &&
+		elf2.end >= elf1.start {
 		return true
 	}
 
