@@ -9,12 +9,21 @@ const input = `A Y
 B X
 C Z`
 
-func TestPart(t *testing.T) {
+func TestPart1(t *testing.T) {
 	r := strings.NewReader(input)
 	result := Part1(r)
 
 	if result != 15 {
 		t.Errorf("Expected 15, got: %d", result)
+	}
+}
+
+func TestPart2(t *testing.T) {
+	r := strings.NewReader(input)
+	result := Part2(r)
+
+	if result != 12 {
+		t.Errorf("Expected 12, got: %d", result)
 	}
 }
 
