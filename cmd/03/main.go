@@ -14,8 +14,8 @@ func main() {
 		log.Fatal("Error reading file: ", err)
 	}
 
-	sum := Part1(f)
-	fmt.Printf("Part 1 solution: %d", sum)
+	sum := Part2(f)
+	fmt.Printf("Part 2 solution: %d", sum)
 
 }
 
@@ -32,7 +32,19 @@ func Part1(r io.Reader) int {
 }
 
 func Part2(r io.Reader) int {
-	return 1
+	rucks := ParseRucksacks(r)
+	sum := 0
+
+	for i := 0; i < len(rucks); i += 3 {
+		a := rucks[i]
+		b := rucks[i+1]
+		c := rucks[i+2]
+
+		badge := FindBadge(&a, &b, &c)
+		sum += items[badge]
+	}
+
+	return sum
 }
 
 func ParseRucksacks(r io.Reader) []Rucksack {
@@ -41,14 +53,14 @@ func ParseRucksacks(r io.Reader) []Rucksack {
 
 	for s.Scan() {
 		ruck := Rucksack{
-			ItemSet: map[rune]struct{}{},
+			DuplicateSet: map[rune]struct{}{},
+			ContainerSet: map[rune]struct{}{},
 		}
 
 		items := []rune(s.Text())
 		l := len(items) / 2
 
-		ruck.Container1 = items[:l]
-		ruck.Container2 = items[l:]
+		ruck.SetContainers(items[:l], items[l:])
 
 		ruck.FindDuplicate()
 		rucksacks = append(rucksacks, ruck)
@@ -57,37 +69,50 @@ func ParseRucksacks(r io.Reader) []Rucksack {
 	return rucksacks
 }
 
-func dbg(c1 []rune, c2 []rune) {
-	fmt.Println("C1:")
-	for i := range c1 {
-		fmt.Printf("%c\n", c1[i])
-
+func FindBadge(a *Rucksack, b *Rucksack, c *Rucksack) rune {
+	for k := range a.ContainerSet {
+		_, ok1 := b.ContainerSet[k]
+		_, ok2 := c.ContainerSet[k]
+		if ok1 && ok2 {
+			return k
+		}
 	}
 
-	fmt.Println("C2:")
-	for i := range c2 {
-		fmt.Printf("%c\n", c2[i])
-
-	}
+	log.Fatal("Error finding Badge")
+	return 0
 }
 
 type Rucksack struct {
-	Container1 []rune
-	Container2 []rune
-	ItemSet    map[rune]struct{}
-	duplicate  rune
+	Container1   []rune
+	Container2   []rune
+	ContainerSet map[rune]struct{}
+	DuplicateSet map[rune]struct{}
+	duplicate    rune
+}
+
+func (r *Rucksack) SetContainers(c1 []rune, c2 []rune) {
+	r.Container1 = c1
+	r.Container2 = c2
+
+	for i := 0; i < len(c1); i++ {
+		r.ContainerSet[c1[i]] = struct{}{}
+	}
+
+	for i := 0; i < len(c2); i++ {
+		r.ContainerSet[c2[i]] = struct{}{}
+	}
 }
 
 func (r *Rucksack) FindDuplicate() {
 	for i := 0; i < len(r.Container1); i++ {
 		item := r.Container1[i]
-		r.ItemSet[item] = struct{}{}
+		r.DuplicateSet[item] = struct{}{}
 	}
 
 	for i := 0; i < len(r.Container2); i++ {
 		item := r.Container2[i]
 
-		if _, ok := r.ItemSet[item]; ok {
+		if _, ok := r.DuplicateSet[item]; ok {
 			r.duplicate = item
 		}
 	}

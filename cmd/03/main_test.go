@@ -25,7 +25,7 @@ func TestPart2(t *testing.T) {
 	r := strings.NewReader(input)
 	result := Part2(r)
 
-	if result != 157 {
-		t.Errorf("Expected 157, got %d", result)
+	if result != 70 {
+		t.Errorf("Expected 70, got %d", result)
 	}
 }

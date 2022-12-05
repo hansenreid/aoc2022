@@ -50,10 +50,6 @@ type Elf struct {
 	Total    int
 }
 
-func (e Elf) String() string {
-	return fmt.Sprintf("Total Calories: %d", e.Total)
-}
-
 type ByTotal []Elf
 
 func (e ByTotal) Len() int           { return len(e) }
@@ -68,7 +64,6 @@ func ParseElves(r io.Reader) []Elf {
 	for s.Scan() {
 		text := s.Text()
 		if text == "" {
-
 			elves = append(elves, *NewElf(currInput))
 			currInput = []string{}
 			continue
